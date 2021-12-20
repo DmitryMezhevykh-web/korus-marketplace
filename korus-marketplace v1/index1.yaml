@@ -1,0 +1,589 @@
+openapi: 3.0.1
+info:
+  version: 1.0.0
+  title: "API korus-marketplace"
+  description: |
+    # Порядок работы с методами
+    1. Авторизоваться с помощью логина и пароля
+    2. Загрузить категории товарного каталога
+    3. Загрузить товары
+    4. Загрузить склады
+    5. Загрузить остатки
+    6. Загрузить цены
+  x-logo:
+    url: '/123.png'
+
+servers:
+  - url: 'https://korus-marketplace.bubbleapps.io/version-test/api/1.1/wf/'
+ 
+paths:
+  /auth:
+    post:
+      security: []
+      summary: "Получение токена"
+      description: "Метод позволяет получить токен с помощью логина и пароля."
+      requestBody:
+        content: 
+          application/json:
+            schema: 
+              properties:
+                email:
+                  description: "Логин"
+                  type: string
+                  example: test@test.ru
+                password:
+                  description: "Пароль"
+                  type: string
+                  example: qwerty123
+      responses: 
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  status: 
+                    type: integer
+                    example: "success"
+                  response:
+                    type: object
+                    properties:
+                      token:
+                        description: "Токен клиента."
+                        type: string
+                        example: "1640006703213x410134863429732220"
+                      user_id:
+                        description: "Идентификатор клиента."
+                        type: string
+                        example: "1639995517569x263123207087834520"
+                      expires: 
+                        type: integer
+                        example: 31536123
+  /product_list:
+    post:
+      summary: "Товары"
+      description: "Метод возвражает все товары пользователя с характеристиками, если не указан `unique_id`. Если `unique_id` указан - возвращается только один товар"
+      requestBody:
+        content: 
+          application/json:
+            schema: 
+              properties:
+                unique_id:
+                  description: "Уникальный id."
+                  type: integer
+                  example: ""
+      responses: 
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  unique_id:
+                    description: "Уникальный id."
+                    type: string
+                    example: "1639995634810x788263130778828800"
+                  product_name:
+                    description: "Наименование товара."
+                    type: string
+                    example: "Планшет"
+                  Client_unique_id_from_erp:
+                    type: string
+                    example: "LLOKVKNCXK"
+                  category_id:
+                    description: "Идентификатор категории."
+                    type: string
+                    example: 
+                  barcode:
+                    description: "Штрихкод товара."
+                    type: integer
+                    example: 214123213
+                  Country:
+                    description: "Страна производителя."
+                    type: string
+                    example: "Россия"
+                  description:
+                    description: "Описание товара."
+                    type: string
+                    example: ""
+                  Gabbarit_unit:
+                    description: "Еденица измерения габаритов."
+                    type: string
+                    example: "Миллиметры"
+                  depth:
+                    description: "Глубина."
+                    type: integer
+                    example: 890
+                  height:
+                    description: "Высота."
+                    type: integer
+                    example: 756
+                  lenght:
+                    description: "Длина."
+                    type: integer
+                    example: 576
+                  width:
+                    description: "Ширина."
+                    type: integer
+                    example: 800
+                  weight:
+                    description: "Вес."
+                    type: integer
+                    example: 700
+                  weight_unit:
+                    description: "Еденица измерения веса."
+                    type: string
+                    example: "Граммы"
+                  old_price:
+                    description: "Старая цена."
+                    type: integer
+                    example: 6000
+                  price:
+                    description: "Новая цена."
+                    type: integer
+                    example: 5000
+                  harakteristik:
+                    description: "Массив с характеристиками."
+                    type: object
+
+  /Product_add-edit:
+    post:
+      summary: "Создание и обновление товаров"
+      description: "Метод создает или обновляет товар. Один запрос - один товар. Если `unique_id` не задан, то создасться новый товар. Если `unique_id` задан, но не найден - вернется ошибка."
+      requestBody:
+        content: 
+          application/json:
+            schema: 
+              properties:
+                unique_id:
+                  description: "Обязательное поле. Уникальный id."
+                  type: string
+                  example: "1639637640720x452765959533053300"
+                product_name:
+                  description: "Наименование товара."
+                  type: string
+                  example: "Новый товар"
+                Client_unique_id_from_erp:
+                  type: string
+                  example: "qweadsqwead"
+                category_id:
+                  description: "Идентификатор категории."
+                  type: integer
+                  example: 12341213
+                barcode:
+                  description: "Штрихкод товара."
+                  type: integer
+                  example: 11112121
+                brand:
+                  description: "Наименование бренда."
+                  type: string
+                  example: "Матрешкин"
+                Country:
+                  description: "Страна изготовления."
+                  type: string
+                  example: "Россия"
+                description:
+                  description: "Описание товара."
+                  type: string
+                  example: "Этот замечательный товар создан через API, еще и изменен!"
+                Gabarit_unit:
+                  description: "Еденица измерения габаритов."
+                  type: string
+                  example: "Сантиметры"
+                depth:
+                  description: "Глубина."
+                  type: integer
+                  example: 10
+                height:
+                  description: "Высота."
+                  type: integer
+                  example: 15
+                length:
+                  description: "Длина."
+                  type: integer
+                  example: 120
+                width:
+                  description: "Ширина."
+                  type: integer
+                  example: 1100
+                weight:
+                  description: "Вес."
+                  type: integer
+                  example: 100
+                weight_unit:
+                  description: "Еденица измерения веса."
+                  type: string
+                  example: "Граммы"
+                old_price:
+                  description: "Старая цена."
+                  type: integer
+                  example: 1500
+                price:
+                  description: "Новая цена."
+                  type: integer
+                  example: 1200
+                harakteristik:
+                  description: "Массив с характеристиками товара."
+                  type: object
+                  properties:
+                    client_har_title:
+                      type: string
+                      example: "Цвет"
+                    client_har_value:
+                      type: string
+                      example: "Синий"
+      responses: 
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  status: 
+                    type: string
+                    example: "success"
+                  response:
+                    type: object
+                    properties:
+                      unique_id:
+                        type: string
+                        example: "1639637640720x452765959533053300"
+                  
+                
+  /warehouses_add-edit:
+    post:
+      summary: "Создание и обновление  склада"
+      description: "Метод создает или обновляет склад. Один запрос - один склад. Если unique_id не задан, то создастся новый склад. Если unique_id задан, но не найден - вернется ошибка."
+      requestBody:
+        content: 
+          application/json:
+            schema: 
+              properties:
+                unique_id:
+                  type: integer
+                  example: ""
+                warehouse_id:
+                  type: string
+                  example: "123657"
+                warehouse_name:
+                  type: string
+                  example: "Склад №1"
+                warehouse_status_Opt:
+                  type: string
+                  example: "ACTIVE"
+      responses: 
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  status: 
+                    type: string
+                    example: "success"
+                  response:
+                    type: object
+                    properties:
+                      warehouse:
+                        type: object
+                        properties:
+                          _id:
+                            type: string
+                            example: "1640026064270x321152913177484400"
+                          Created By:
+                            type: string
+                            example: "1635784787159x754900195449749900"
+                          Created Date:
+                            type: integer
+                            example: 1640026064315
+                          Modified Date:
+                            type: integer
+                            example: 1640026064361
+                          client_id:
+                            type: string
+                            example: "1635784787159x754900195449749900"
+                          warehouse_id:
+                            type: integer
+                            example: 123654
+                          warehouse_name:
+                            type: string
+                            example: "Склад №1"
+                          warehouse_status_Opt:
+                            type: string
+                            example: "ACTIVE"
+                       
+  /Warehouses-list:
+    post:
+      summary: "Склады"
+      description: "Метод возвражает все склады пользователя с характеристиками, если не указан `unique_id`. Если `unique_id` указан - возвращается только один товар."
+      requestBody:
+        content: 
+          application/json:
+            schema: 
+              properties:
+                unique_id:
+                  type: string
+                  example: ""
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  unique_id: 
+                    type: string
+                    example: "1639642239332x762328172806975100"
+                  warehouse_id:
+                    type: string
+                    example: "123654"
+                  warehouse_name:
+                    type: string
+                    example: "Новый склад"
+                  warehouse_status_Opt:
+                    type: string
+                    example: "ACTIVE"
+
+
+  /Warehouses-del:
+    post:
+      summary: "Удаление склада"
+      description: "Метод удаляет склад по уникальному ID."
+      requestBody:
+        content: 
+          application/json:
+            schema: 
+              properties:
+                unique_id:
+                  type: string
+                  example: ""
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  unique_id: 
+                    type: string
+                    example: "1639642239332x762328172806975100"
+                  warehouse_id:
+                    type: string
+                    example: "123654"
+                  warehouse_name:
+                    type: string
+                    example: "Новый склад"
+                  warehouse_status_Opt:
+                    type: string
+                    example: "ACTIVE"
+        404:
+          description: Failure
+          content:
+            application/json:
+              schema:
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 404
+                  body:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        example: "NOT_FOUND"
+                      massage: 
+                        type: string
+                        example: "Workflow not found Warehouses-del"
+  /prices:
+    post:
+      summary: "Установить цену товара"
+      description: "Метод задает новую цену товара."
+      requestBody:
+        content: 
+          application/json:
+            schema: 
+              properties:
+                unique_id:
+                  type: string
+                  example: "1639637640720x452765959533053300"
+                old_price:
+                  type: integer
+                  example: 1500
+                price: 
+                  type: integer
+                  example: 1200
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  status: 
+                    type: string
+                    example: "success"
+                  response:
+                    type: object
+                    properties:
+                      response:
+                        type: string
+                        example: "Цена успешно отредактирована"
+  /stocks_add-edit:
+    post:
+      summary: "Создание или обновление остатков на складе"
+      description: "Создает или обновляет остатки на складе. Один запрос - один остаток для одного товара. Если `unique_id` для склада и для товара не задан, то вернется ошибка."
+      requestBody:
+        content: 
+          application/json:
+            schema: 
+              properties:
+                warehouse_unique_id:
+                  type: string
+                  example: "1639642239332x762328172806975100"
+                goods_unique_id:
+                  type: string
+                  example: "1639637640720x452765959533053300"
+                quantity: 
+                  type: integer
+                  example: 12
+                reserved:
+                  type: integer
+                  example: 15
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  status: 
+                    type: string
+                    example: "success"
+                  response:
+                    type: object
+                    properties:
+                      response:
+                        type: string
+                        example: "Остатки успешно обновлены"
+  /catalog_add-edit:
+    post:
+      summary: "Создание или изменение каталога"
+      description: "Медод создает или изменяет каталог клиента. Один запрос - одно название каталога."
+      requestBody:
+        content: 
+          application/json:
+            schema: 
+              properties:
+                CLIENT_category_id:
+                  type: integer
+                  example: 12348789554
+                CLIENT_category_name:
+                  type: string
+                  example: "Супер прикольные женские куртки"
+                parent_id: 
+                  type: integer
+                  example: 43244231234
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  status: 
+                    type: string
+                    example: "success"
+                  response:
+                    type: object
+                    properties:
+                      response:
+                        type: string
+                        example: "Каталог успешно обновлен"
+  /catalog_list:
+    post:
+      summary: "Категории"
+      description: "Метод возвражает все категории каталога пользователя."
+      requestBody:
+        content: 
+          application/json:
+            schema: 
+              properties:
+                -:
+                  type: none
+                  example: 
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  status: 
+                    type: string
+                    example: "success"
+                  response:
+                    type: object
+                    properties:
+                      catalog:
+                        type: object
+                        properties:
+                          CLIENT_category_id": 
+                            type: integer
+                            example: 213123123
+                          CLIENT_category_name: 
+                            type: string
+                            example: "Швейные машинки"
+                          client_id: 
+                            type: string
+                            example: "1635784787159x754900195449749900"
+                          Created Date: 
+                            type: integer
+                            example: 1636976041523
+                          Created By: 
+                            type: string
+                            example: "admin_user_korus-marketplace_test"
+                          Modified Date: 
+                            type: integer
+                            example: 1638883074527
+                          WB_predmet: 
+                            type: string
+                            example: "1638795272065x249977000876748800"
+                          _id: 
+                            type: string
+                            example: "1636976041463x819130399848875500"
+  /catalog_del:
+    post:
+      summary: "Удаление каталога"
+      description: "Метод удаляет каталог."
+      requestBody:
+        content: 
+          application/json:
+            schema: 
+              properties:
+                CLIENT_category_id:
+                  type: integer
+                  example: 31231231
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  status: 
+                    type: string
+                    example: "success"
+                  response:
+                    type: object
+                    properties:
+                      response:
+                        type: string
+                        example: "Каталог успешно удален"
+components:
+  securitySchemes:
+    bearerAuth:          
+      type: http
+      scheme: bearer
+      bearerFormat: 16387321322x978663421424    
+security:
+  - bearerAuth: []
